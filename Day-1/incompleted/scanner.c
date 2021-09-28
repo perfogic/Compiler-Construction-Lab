@@ -60,6 +60,32 @@ Token *readConstChar(void)
   // TODO
 }
 
+// Hello Homework
+void countNumsChars(char *fileName)
+{
+  int count_digit = 0;
+  int count_char = 0;
+  if (openInputStream(fileName) == IO_ERROR)
+    return 0;
+
+  while (currentChar != TK_EOF)
+  {
+    if (currentChar == CHAR_DIGIT)
+    {
+      count_digit++;
+    }
+    if (currentChar == CHAR_LETTER)
+    {
+      count_char++;
+    }
+    readChar();
+  }
+
+  printf("There are %d digits and %d characters. \n", count_digit, count_char);
+
+  closeInputStream();
+  return 0;
+}
 Token *getToken(void)
 {
   Token *token;
@@ -308,7 +334,6 @@ int scan(char *fileName)
   closeInputStream();
   return IO_SUCCESS;
 }
-
 /******************************************************************/
 
 int main(int argc, char *argv[])
