@@ -10,31 +10,70 @@
 #define MAX_IDENT_LEN 15
 #define KEYWORDS_COUNT 20
 
-typedef enum {
-  TK_NONE, TK_IDENT, TK_NUMBER, TK_CHAR, TK_EOF,
+typedef enum
+{
+  TK_NONE,
+  TK_IDENT,
+  TK_NUMBER,
+  TK_CHAR,
+  TK_EOF,
 
-  KW_PROGRAM, KW_CONST, KW_TYPE, KW_VAR,
-  KW_INTEGER, KW_CHAR, KW_ARRAY, KW_OF, 
-  KW_FUNCTION, KW_PROCEDURE,
-  KW_BEGIN, KW_END, KW_CALL,
-  KW_IF, KW_THEN, KW_ELSE,
-  KW_WHILE, KW_DO, KW_FOR, KW_TO,
+  KW_PROGRAM,
+  KW_CONST,
+  KW_TYPE,
+  KW_VAR,
+  KW_INTEGER,
+  KW_CHAR,
+  KW_ARRAY,
+  KW_OF,
+  KW_FUNCTION,
+  KW_PROCEDURE,
+  KW_BEGIN,
+  KW_END,
+  KW_CALL,
+  KW_IF,
+  KW_THEN,
+  KW_ELSE,
+  KW_WHILE,
+  KW_DO,
+  KW_FOR,
+  KW_TO,
 
-  SB_SEMICOLON, SB_COLON, SB_PERIOD, SB_COMMA,
-  SB_ASSIGN, SB_EQ, SB_NEQ, SB_LT, SB_LE, SB_GT, SB_GE,
-  SB_PLUS, SB_MINUS, SB_TIMES, SB_SLASH,
-  SB_LPAR, SB_RPAR, SB_LSEL, SB_RSEL
-} TokenType; 
+  SB_SEMICOLON,
+  SB_COLON,
+  SB_PERIOD,
+  SB_COMMA,
+  SB_ASSIGN,
+  SB_EQ,
+  SB_NEQ,
+  SB_LT,
+  SB_LE,
+  SB_GT,
+  SB_GE,
+  SB_PLUS,
+  SB_MINUS,
+  SB_TIMES,
+  SB_SLASH,
+  SB_LPAR,
+  SB_RPAR,
+  SB_LSEL,
+  SB_RSEL
+} TokenType;
+// Tạo ra một loạt cú pháp với các giá trị khác nhau
 
-typedef struct {
+// Định nghĩa Token
+typedef struct
+{
   char string[MAX_IDENT_LEN + 1];
   int lineNo, colNo;
   TokenType tokenType;
   int value;
 } Token;
 
+// Kiểm tra xem 1 string có phải là keyword hay không
 TokenType checkKeyword(char *string);
-Token* makeToken(TokenType tokenType, int lineNo, int colNo);
 
+// Tạo ra một token mới, cung cấp loại của token và vị trí
+Token *makeToken(TokenType tokenType, int lineNo, int colNo);
 
 #endif

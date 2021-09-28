@@ -11,17 +11,22 @@ FILE *inputStream;
 int lineNo, colNo;
 int currentChar;
 
-int readChar(void) {
+// Đọc từng chữ một
+int readChar(void)
+{
   currentChar = getc(inputStream);
-  colNo ++;
-  if (currentChar == '\n') {
-    lineNo ++;
+  colNo++;
+  if (currentChar == '\n')
+  {
+    lineNo++;
     colNo = 0;
   }
   return currentChar;
 }
 
-int openInputStream(char *fileName) {
+// Mở file input
+int openInputStream(char *fileName)
+{
   inputStream = fopen(fileName, "rt");
   if (inputStream == NULL)
     return IO_ERROR;
@@ -31,7 +36,8 @@ int openInputStream(char *fileName) {
   return IO_SUCCESS;
 }
 
-void closeInputStream() {
+// Đóng file input
+void closeInputStream()
+{
   fclose(inputStream);
 }
-

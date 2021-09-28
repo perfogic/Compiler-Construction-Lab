@@ -7,7 +7,9 @@
 #ifndef __CHARCODE_H__
 #define __CHARCODE_H__
 
-typedef enum {
+// ĐỊnh nghĩa char_code để nhận biết ví dụ CHAR_SPACE là dấu cách, CHAR_LETTER là chữ cái
+typedef enum
+{
   CHAR_SPACE,
   CHAR_LETTER,
   CHAR_DIGIT,
