@@ -68,13 +68,13 @@ void countNumsChars(char *fileName)
   if (openInputStream(fileName) == IO_ERROR)
     return 0;
 
-  while (currentChar != TK_EOF)
+  while (currentChar != EOF)
   {
-    if (currentChar == CHAR_DIGIT)
+    if (charCodes[currentChar] == CHAR_DIGIT)
     {
       count_digit++;
     }
-    if (currentChar == CHAR_LETTER)
+    if (charCodes[currentChar] == CHAR_LETTER)
     {
       count_char++;
     }
