@@ -22,17 +22,66 @@ extern CharCode charCodes[];
 
 void skipBlank()
 {
-  // TODO
+  while ((currentChar != EOF) && (charCodes[currentChar] == CHAR_SPACE))
+  {
+    readChar();
+  }
 }
 
 void skipComment()
 {
-  // TODO
+  int state = 0;
+  while ((currentChar != EOF) && (state < 2))
+  {
+    switch (charCodes[currentChar])
+    {
+    case CHAR_TIMES:
+      state = 1;
+      break;
+    case CHAR_RPAR:
+      if (state == 1)
+        state = 2;
+      else
+        state = 0;
+      break;
+    default:
+      state = 0;
+    }
+    readChar();
+  }
+  if (state != 2)
+    error(ERR_ENDOFCOMMENT, lineNo, colNo);
 }
 
 Token *readIdentKeyword(void)
 {
-  // TODO
+  Token *token = makeToken(TK_NONE, lineNo, colNo);
+  int count = 1;
+
+  token->string[0] = toupper((char)currentChar);
+  readChar();
+
+  while ((currentChar != EOF) &&
+         ((charCodes[currentChar] == CHAR_LETTER) || (charCodes[currentChar] == CHAR_DIGIT)))
+  {
+    if (count <= MAX_IDENT_LEN)
+      token->string[count++] = toupper((char)currentChar);
+    readChar();
+  }
+
+  if (count > MAX_IDENT_LEN)
+  {
+    error(ERR_IDENTTOOLONG, token->lineNo, token->colNo);
+    return token;
+  }
+
+  token->string[count] = '\0';
+  token->tokenType = checkKeyword(token->string);
+
+  if (token->tokenType == TK_NONE)
+    token->tokenType = TK_IDENT;
+
+  return token;
 }
 
 Token *readNumber(void)
@@ -57,7 +106,39 @@ Token *readNumber(void)
 
 Token *readConstChar(void)
 {
-  // TODO
+  Token *token = makeToken(TK_CHAR, lineNo, colNo);
+
+  readChar();
+  if (currentChar == EOF)
+  {
+    token->tokenType = TK_NONE;
+    error(ERR_INVALIDCHARCONSTANT, token->lineNo, token->colNo);
+    return token;
+  }
+
+  token->string[0] = currentChar;
+  token->string[1] = '\0';
+  token->value = currentChar;
+
+  readChar();
+  if (currentChar == EOF)
+  {
+    token->tokenType = TK_NONE;
+    error(ERR_INVALIDCHARCONSTANT, token->lineNo, token->colNo);
+    return token;
+  }
+
+  if (charCodes[currentChar] == CHAR_SINGLEQUOTE)
+  {
+    readChar();
+    return token;
+  }
+  else
+  {
+    token->tokenType = TK_NONE;
+    error(ERR_INVALIDCHARCONSTANT, token->lineNo, token->colNo);
+    return token;
+  }
 }
 
 // Hello Homework
@@ -119,6 +200,8 @@ Token *getToken(void)
     token = makeToken(SB_SLASH, lineNo, colNo);
     readChar();
     return token;
+  case CHAR_SINGLEQUOTE:
+    return readConstChar();
   case CHAR_LT:
     ln = lineNo;
     cn = colNo;
