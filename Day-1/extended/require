@@ -1,0 +1,15 @@
+Replace the lexical rules of the KPL language with the following rules:
+Identifiers:
+* A valid identifier can have letters (both uppercase and lowercase letters), digits, the dollar sign ($) and the underscore (_)
+* 1.The first letter of an identifier should be either a letter or an underscore.
+* 2.You cannot use keywords as identifiers.( Base code also have it because if it is keyword => return keyword so there is no chance to be indent)
+* 3.Length of an identì?er is not over than 15. 
+* 4.Identifiers are case-sensitive
+Keywords:
+* Keywords are case-insensitive (Base code already have this case)
+Comments:
+* Multi-line Comments :  between /* and */
+Special Symbols:
+* Relop: not equal to <>
+Character/String constants:
+Use an addition character \ for 2 constants single quote and backslash, that is ‘\’’ for a single quote and ‘\\’for backslash.
