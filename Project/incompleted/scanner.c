@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <ctype.h>
 #include "reader.h"
 #include "charcode.h"
 #include "token.h"
@@ -142,31 +142,31 @@ Token *readConstChar(void)
 }
 
 // Hello Homework
-void countNumsChars(char *fileName)
-{
-  int count_digit = 0;
-  int count_char = 0;
-  if (openInputStream(fileName) == IO_ERROR)
-    return 0;
+// void countNumsChars(char *fileName)
+// {
+//   int count_digit = 0;
+//   int count_char = 0;
+//   if (openInputStream(fileName) == IO_ERROR)
+//     return 0;
 
-  while (currentChar != EOF)
-  {
-    if (charCodes[currentChar] == CHAR_DIGIT)
-    {
-      count_digit++;
-    }
-    if (charCodes[currentChar] == CHAR_LETTER)
-    {
-      count_char++;
-    }
-    readChar();
-  }
+//   while (currentChar != EOF)
+//   {
+//     if (charCodes[currentChar] == CHAR_DIGIT)
+//     {
+//       count_digit++;
+//     }
+//     if (charCodes[currentChar] == CHAR_LETTER)
+//     {
+//       count_char++;
+//     }
+//     readChar();
+//   }
 
-  printf("There are %d digits and %d characters. \n", count_digit, count_char);
+//   printf("There are %d digits and %d characters. \n", count_digit, count_char);
 
-  closeInputStream();
-  return 0;
-}
+//   closeInputStream();
+//   return 0;
+// }
 Token *getToken(void)
 {
   Token *token;
@@ -242,8 +242,8 @@ Token *getToken(void)
     }
     else
     {
-      token = makeToken(TK_NONE, ln, cn);
       error(ERR_INVALIDSYMBOL, ln, cn);
+      return makeToken(TK_NONE, ln, cn);
     }
     return token;
   case CHAR_EQ:
