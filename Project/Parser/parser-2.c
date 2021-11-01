@@ -14,6 +14,7 @@
 Token *currentToken;
 Token *lookAhead;
 
+// Hàm này dùng để token tiếp theo và lưu vào lookAhead và lưu token cũ ở currentToken
 void scan(void)
 {
   Token *tmp = currentToken;
@@ -22,6 +23,7 @@ void scan(void)
   free(tmp);
 }
 
+// Hàm này sẽ đọc token nếu như token tiếp theo mà bằng token đọc thì in ra và đọc token tiếp
 void eat(TokenType tokenType)
 {
   if (lookAhead->tokenType == tokenType)
@@ -36,14 +38,17 @@ void eat(TokenType tokenType)
 void compileProgram(void)
 {
   assert("Parsing a Program ....");
+  // Đọc khởi tạo chương trình và tên chương trình ( nma chẳng làm gì cả ) và dấu chấm phảy
   eat(KW_PROGRAM);
   eat(TK_IDENT);
   eat(SB_SEMICOLON);
+  // Bắt đầu đọc cú bên trong
   compileBlock();
   eat(SB_PERIOD);
   assert("Program parsed!");
 }
 
+// Đọc kí hiệu CONST
 void compileBlock(void)
 {
   assert("Parsing a Block ....");
@@ -59,6 +64,7 @@ void compileBlock(void)
   assert("Block parsed!");
 }
 
+// Đọc kí hiệu TYPE
 void compileBlock2(void)
 {
   if (lookAhead->tokenType == KW_TYPE)
@@ -72,6 +78,7 @@ void compileBlock2(void)
     compileBlock3();
 }
 
+// Đọc kí hiệu VAR
 void compileBlock3(void)
 {
   if (lookAhead->tokenType == KW_VAR)
@@ -85,6 +92,7 @@ void compileBlock3(void)
     compileBlock4();
 }
 
+// Đọc khai báo hàm
 void compileBlock4(void)
 {
   compileSubDecls();
@@ -97,6 +105,7 @@ void compileBlock5(void)
   compileStatements();
   eat(KW_END);
 }
+
 void compileConstDecls(void)
 {
   assert("Parsing subconstants...");
@@ -174,18 +183,17 @@ void compileFuncDecl(void)
   assert("Parsing a function ....");
   eat(KW_FUNCTION);
   eat(TK_IDENT);
-  compileParams(); // Đọc các biến trong function EX: Function tinhtong(a :integer)
+  compileParams();
   eat(SB_COLON);
-  compileBasicType(); // Loại return của function này ví dụ trả về 1 Integer
+  compileBasicType();
   eat(SB_SEMICOLON);
-  compileBlock(); // Compile phần bên trong function
+  compileBlock();
   eat(SB_SEMICOLON);
   assert("Function parsed ....");
 }
 
 void compileProcDecl(void)
 {
-  // Về cơ bản procedure giống function tuy nhiên procedure giống như 1 hàm void vậy
   assert("Parsing a procedure ....");
   eat(KW_PROCEDURE);
   eat(TK_IDENT);
@@ -198,8 +206,6 @@ void compileProcDecl(void)
 
 void compileUnsignedConstant(void)
 {
-  // Hàm này sẽ đọc các biến như số, biến và char
-  assert("Parsing a unsigned constant...");
   switch (lookAhead->tokenType)
   {
   case TK_NUMBER:
@@ -215,12 +221,10 @@ void compileUnsignedConstant(void)
     error(ERR_INVALIDCONSTANT, lookAhead->lineNo, lookAhead->colNo);
     break;
   }
-  assert("Unsigned constant parsed!");
 }
 
 void compileConstant(void)
 {
-  // Giống compile Unsigned constant tuy nhiên nó xử lí các trường hợp như a +b ,c - d
   assert("Parsing a constant...");
   switch (lookAhead->tokenType)
   {
@@ -232,7 +236,6 @@ void compileConstant(void)
     eat(SB_MINUS);
     compileConstant2();
     break;
-  // lí do đặt TK_CHAR ở đây là KPL không xử lí cộng trừ 2 char
   case TK_CHAR:
     eat(TK_CHAR);
     break;
@@ -261,7 +264,6 @@ void compileConstant2(void)
 
 void compileType(void)
 {
-  // NHận các tường hợp integer, char, array, biến
   switch (lookAhead->tokenType)
   {
   case KW_INTEGER:
@@ -273,7 +275,7 @@ void compileType(void)
   case TK_IDENT:
     eat(TK_IDENT);
     break;
-  case KW_ARRAY: // A(.1.)
+  case KW_ARRAY:
     eat(KW_ARRAY);
     eat(SB_LSEL);
     eat(TK_NUMBER);
@@ -286,10 +288,10 @@ void compileType(void)
     break;
   }
 }
+
 // Đọc xem nó là loại gì integer hay char nếu k phải 2 loại này thì báo lỗi
 void compileBasicType(void)
 {
-  // Cái này chỉ cần vậy bởi vì function chỉ return 2 giá trị là char và integer
   switch (lookAhead->tokenType)
   {
   case KW_INTEGER:
@@ -304,7 +306,7 @@ void compileBasicType(void)
   }
 }
 
-// Đọc các params trong function và procedure
+// Đọc các param trong function hoặc procedure
 void compileParams(void)
 {
   switch (lookAhead->tokenType)
@@ -315,7 +317,6 @@ void compileParams(void)
     compileParams2(); // đọc xem sau có phải là dấu ; hay )
     eat(SB_RPAR);
     break;
-  // nếu trong lúc khai báo biến có : hay ; đứng không thì mặc kệ không quan tâm
   case SB_COLON:
   case SB_SEMICOLON:
     break;
@@ -325,11 +326,11 @@ void compileParams(void)
   }
 }
 
+// Đọc xem có dấu chấm phảy không (kiểu check xem có khai báo tiếp ko ấy)
 void compileParams2(void)
 {
   switch (lookAhead->tokenType)
   {
-  // Nếu là semicolon chứng tỏ là còn param nên đọc tiếp đến chết
   case SB_SEMICOLON:
     eat(SB_SEMICOLON);
     compileParam();
@@ -343,18 +344,15 @@ void compileParams2(void)
   }
 }
 
-// DÙng để đọc 1 param
 void compileParam(void)
 {
   switch (lookAhead->tokenType)
   {
-  // Trường hợp : a: integer
   case TK_IDENT:
     eat(TK_IDENT);
     eat(SB_COLON);
     compileBasicType();
     break;
-  // trường hợp đặt là var b: integer
   case KW_VAR:
     eat(KW_VAR);
     eat(TK_IDENT);
@@ -367,13 +365,13 @@ void compileParam(void)
   }
 }
 
-// Đọc từng dòng 1 bên trong begin và end
+// Đọc bên trong begin/ end
 void compileStatements(void)
 {
   compileStatement();
   compileStatements2();
 }
-
+// Check xem có nhiều statement ko hay chỉ có 1
 void compileStatements2(void)
 {
   switch (lookAhead->tokenType)
@@ -398,10 +396,10 @@ void compileStatement(void)
   switch (lookAhead->tokenType)
   {
   case TK_IDENT:
-    compileAssignSt(); // Gán
+    compileAssignSt();
     break;
   case KW_CALL:
-    compileCallSt(); // In
+    compileCallSt();
     break;
   case KW_BEGIN:
     compileGroupSt();
@@ -431,25 +429,24 @@ void compileAssignSt(void)
 {
   assert("Parsing an assign statement ....");
   eat(TK_IDENT);
-  // Check xem có phải là 1 phần tử của Array k
   if (lookAhead->tokenType == SB_LSEL)
   {
     compileIndexes();
   }
-  eat(SB_ASSIGN); // Cái assign này thay cho := thường sẽ k đọc dấu := này đâu
+  eat(SB_ASSIGN);
   compileExpression();
   assert("Assign statement parsed ....");
 }
-// xử lí hàm print ví dụ call x
+
 void compileCallSt(void)
 {
   assert("Parsing a call statement ....");
   eat(KW_CALL);
-  eat(TK_IDENT); // Đọc indent là writeln hoặc writeI phần phân tích ngữ nghĩa sẽ xử lí cái này (i guess)
+  eat(TK_IDENT);
   compileArguments();
   assert("Call statement parsed ....");
 }
-// xử lí bên trong begin và end
+
 void compileGroupSt(void)
 {
   assert("Parsing a group statement ....");
@@ -458,19 +455,19 @@ void compileGroupSt(void)
   eat(KW_END);
   assert("Group statement parsed ....");
 }
-// xử lí if
+
 void compileIfSt(void)
 {
   assert("Parsing an if statement ....");
   eat(KW_IF);
-  compileCondition(); // hàm này đẻ xử lí điều kiện ví dụ a <b
+  compileCondition();
   eat(KW_THEN);
-  compileStatement(); // hàm này để xử lí phép toán kiểu a := a + b
+  compileStatement();
   if (lookAhead->tokenType == KW_ELSE)
     compileElseSt();
   assert("If statement parsed ....");
 }
-// xử lí else của if
+
 void compileElseSt(void)
 {
   eat(KW_ELSE);
@@ -503,7 +500,6 @@ void compileForSt(void)
 
 void compileArguments(void)
 {
-  // luôn phải có () vì dùng writeln(f(1)) nếu call x + b là hỏng luôn này
   switch (lookAhead->tokenType)
   {
   case SB_LPAR:
@@ -546,7 +542,6 @@ void compileArguments(void)
   }
 }
 
-// Hàm này để xem ví dụ như ở hàm call thì để xem có in nhiều biến ko ví dụ writeln(a + b, c +d)
 void compileArguments2(void)
 {
   switch (lookAhead->tokenType)
@@ -566,11 +561,10 @@ void compileArguments2(void)
   }
 }
 
-// xử lí kiểu so sánh a > b
 void compileCondition(void)
 {
-  compileExpression(); // xử lí vế đầu
-  compileCondition2(); // xử lí cái so sánh vế sau nè nếu k có thì là sai
+  compileExpression();
+  compileCondition2();
 }
 
 void compileCondition2(void)
@@ -607,13 +601,11 @@ void compileCondition2(void)
   }
 }
 
-// phần mở rộng express2 xử lí thêm trường hợp có dấu + hoặc trừ đằng trước vẫn cho pass
 void compileExpression(void)
 {
   assert("Parsing an expression");
   switch (lookAhead->tokenType)
   {
-  // dấu cộng với trừ xét trường hợp thích gán x = 1 + 2 chả hạn hay 1-2
   case SB_PLUS:
     eat(SB_PLUS);
     compileExpression2();
@@ -629,18 +621,14 @@ void compileExpression(void)
   assert("Expression parsed");
 }
 
-// xử lí ví dụ như phép a * (b + c)
 void compileExpression2(void)
 {
-  // xử lí phần a *
   compileTerm();
-  // xử lí phần b + c
   compileExpression3();
 }
 
 void compileExpression3(void)
 {
-  // xử lí trường hợp cộng trừ
   switch (lookAhead->tokenType)
   {
   case SB_PLUS:
@@ -683,16 +671,14 @@ void compileExpression3(void)
   }
 }
 
-// xử lí ví dụ trường hợp a * b
 void compileTerm(void)
 {
-  compileFactor(); // xử lí biến a
-  compileTerm2();  // xử lí phần * b
+  compileFactor();
+  compileTerm2();
 }
 
 void compileTerm2(void)
 {
-  // Đọc xem đằng sau có xử lí trường hợp nhân chia gì k
   switch (lookAhead->tokenType)
   {
   case SB_TIMES:
@@ -741,27 +727,22 @@ void compileFactor(void)
 {
   switch (lookAhead->tokenType)
   {
-  // Đọc chữ và số
   case TK_NUMBER:
   case TK_CHAR:
     compileUnsignedConstant();
     break;
-  // Đọc trường hợp có dấu ngoặc (cái này kiểu 3 * (1 + 2))
   case SB_LPAR:
     eat(SB_LPAR);
     compileExpression();
     eat(SB_RPAR);
     break;
-  // Đọc biến
   case TK_IDENT:
     eat(TK_IDENT);
     switch (lookAhead->tokenType)
     {
-    // xét trường hợp nó là một phần tử của array
     case SB_LSEL:
       compileIndexes();
       break;
-    // xét trường hợp nó là function ví dụ F(1)
     case SB_LPAR:
       compileArguments();
       break;
@@ -775,15 +756,14 @@ void compileFactor(void)
   }
 }
 
-// đọc phần tử bên trong array
 void compileIndexes(void)
 {
   if (lookAhead->tokenType == SB_LSEL)
   {
     eat(SB_LSEL);
-    compileExpression(); // cái này auto là number
+    compileExpression();
     eat(SB_RSEL);
-    compileIndexes(); // check trường hợp nó là mảng 2 chiều
+    compileIndexes();
   }
 }
 
@@ -793,7 +773,7 @@ int compile(char *fileName)
     return IO_ERROR;
 
   currentToken = NULL;
-  lookAhead = getValidToken();
+  lookAhead = getValidToken(); // Initial: lookAhead = KW_PROGRAM
 
   compileProgram();
 

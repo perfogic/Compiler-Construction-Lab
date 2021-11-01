@@ -1,4 +1,4 @@
-Program Example2; (* Factorial *)
+PROGRAM Example2; (* Factorial *)
    
 Var n : Integer;
 
