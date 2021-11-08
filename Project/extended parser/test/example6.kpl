@@ -1,0 +1,11 @@
+Program SUM;
+Var n: Integer;
+Function SUM(n: Integer) : Integer;
+  Begin 
+    If n = 0 Then SUM := 0 Else SUM := SUM + n * n;
+  End;
+
+Begin  
+  Read(n);
+  Call WriteLn(SUM(n));
+End.

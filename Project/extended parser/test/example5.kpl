@@ -1,0 +1,11 @@
+Program SQUARE;
+Var n: Integer;
+Function SQUARE(n: Integer) : Integer;
+  Begin 
+    SQUARE := n * n;
+  End;
+
+Begin  
+  Read(n);
+  Call WriteLn(SQUARE(n));
+End.
