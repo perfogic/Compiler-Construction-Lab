@@ -1,0 +1,13 @@
+Program Example5; (* Example 1 *)
+const c = 098;
+type t = char;
+function f(var x: char):char;
+const b = c;
+type a = array(.5.) of array(.3.) of t;
+var z : integer;
+begin
+t := 'a';
+c := b;
+end;
+Begin
+End. (* Example 1 *)

@@ -303,6 +303,7 @@ Type *compileType(void)
     type->typeClass = TP_ARRAY;
     eat(KW_ARRAY);
     eat(SB_LSEL);
+    // count++;
     eat(TK_NUMBER);
     type->arraySize = currentToken->value;
     eat(SB_RSEL);
